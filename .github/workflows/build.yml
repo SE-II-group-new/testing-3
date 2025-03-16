@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available
+          distribution: 'zulu'
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -28,15 +28,20 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: ${{ runner.os }}-gradle
-      - name: Upload Gradle Problems Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: gradle-problems-report
-          path: build/reports/problems/problems-report.html
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build sonar --info --info
+        run: ./gradlew build sonarqube --info --stacktrace
+      - name: Upload Gradle Problems Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-problems-report
+          path: build/reports/problems/problems-report.html
