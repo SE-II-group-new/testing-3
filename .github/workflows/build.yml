@@ -38,7 +38,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build sonarqube --info --stacktrace
+        run: ./gradlew build sonar --info --stacktrace
       - name: Upload Gradle Problems Report
         if: always()
         uses: actions/upload-artifact@v4
