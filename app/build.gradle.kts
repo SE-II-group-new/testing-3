@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-
+    implementation("org.apache.commons:commons-compress:1.25.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
